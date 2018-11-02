@@ -1,0 +1,12 @@
+{
+    "database_path": "bishii.db",
+    "systems": [
+        {
+            "name": "NES",
+            "rom_folders" : [
+                "/home/thibault/roms/nes",
+                "roms/nes"
+            ]
+        }
+    ]
+}

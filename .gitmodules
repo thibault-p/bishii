@@ -1,0 +1,9 @@
+[submodule "server/libs/optional-lite"]
+	path = server/libs/optional-lite
+	url = https://github.com/martinmoene/optional-lite.git
+[submodule "server/libs/rapidjson"]
+	path = server/libs/rapidjson
+	url = https://github.com/Tencent/rapidjson.git
+[submodule "server/libs/pistache"]
+	path = server/libs/pistache
+	url = https://github.com/oktal/pistache.git
