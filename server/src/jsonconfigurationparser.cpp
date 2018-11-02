@@ -37,15 +37,6 @@ namespace  {
         stringstream ss;
         rapidjson::Value const * propNode = &node;
 
-        if (node.IsObject())
-        {
-            std::cout << "here" << std::endl;
-        }
-        if (node.IsNull())
-        {
-            std::cout << "NULL" << std::endl;
-        }
-
         for (const auto& property : properties)
         {
             ss << "." << property;
@@ -62,13 +53,15 @@ namespace  {
         return Result<string>::success(propNode->GetString());
     }
 
-    Result<list<System>> loadSystems(const rapidjson::Value& systemsNode, const path& basePath)
+    Result<list<System>> loadSystems(const rapidjson::Value& node, const path& basePath)
     {
-        if (systemsNode == NULL || !systemsNode.IsArray())
+        if (!node.HasMember("systems") || !node["systems"].IsArray())
         {
             return  Result<list<System>>::failure("'systems' node is missing");
         }
+        const auto& systemsNode = node["systems"];
         list<System> systems;
+
         for (const auto& systemNode : systemsNode.GetArray())
         {
             if (!(systemNode.IsObject() && systemNode.HasMember("name") && systemNode.HasMember("rom_folders")))
@@ -105,6 +98,7 @@ Result<Configuration> JsonConfigurationParser::parseConfiguration(const string& 
 
     fseek(fp, 0, SEEK_END);
     size_t fileSize = static_cast<size_t>(ftell(fp));
+    rewind(fp);
     char* buffer = static_cast<char*>(malloc(sizeof (char) * (fileSize + 1)));
     size_t readLength = fread(buffer, 1, fileSize, fp);
     buffer[readLength] = '\0';
@@ -125,7 +119,7 @@ Result<Configuration> JsonConfigurationParser::parseConfiguration(const string& 
         return Result<Configuration>::failure("Failed to parse database, reason: " + dbPath.getError());
     }
 
-    const auto systems = loadSystems(document["system"], parentPath);
+    const auto systems = loadSystems(document, parentPath);
 
     if (systems.isFailure()) {
         free(buffer);
